@@ -13,7 +13,7 @@
   21               	/* prologue: function */
   22               	/* frame size = 0 */
   23               	.LM2:
-  24 0000 D09A      		sbi 58-32,0
+  24 0000 B89A      		sbi 55-32,0
   25               	.LM3:
   26 0002 61E0      		ldi r22,lo8(1)
   27               	.LBB18:
@@ -40,10 +40,10 @@
   48               	.LBE26:
   49               	.LBE25:
   50               	.LM5:
-  51 000c 8BB3      		in r24,59-32
+  51 000c 88B3      		in r24,56-32
   52               	.LVL1:
   53 000e 8627      		eor r24,r22
-  54 0010 8BBB      		out 59-32,r24
+  54 0010 88BB      		out 56-32,r24
   55 0012 80E4      		ldi r24,lo8(8000)
   56 0014 9FE1      		ldi r25,hi8(8000)
   57               	.LVL2:
@@ -70,10 +70,10 @@
   78               	.LBE24:
   79               	.LBE32:
   80               	.LM9:
-  81 0022 8BB3      		in r24,59-32
+  81 0022 88B3      		in r24,56-32
   82               	.LVL3:
   83 0024 8627      		eor r24,r22
-  84 0026 8BBB      		out 59-32,r24
+  84 0026 88BB      		out 56-32,r24
   85               	.LBB33:
   86               	.LBB31:
   87               	.LBB30:
@@ -97,12 +97,12 @@
  130               	.Letext0:
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\milesdai\AppData\Local\Temp/ccK5hoNU.s:2      *ABS*:0000003f __SREG__
-C:\Users\milesdai\AppData\Local\Temp/ccK5hoNU.s:3      *ABS*:0000003e __SP_H__
-C:\Users\milesdai\AppData\Local\Temp/ccK5hoNU.s:4      *ABS*:0000003d __SP_L__
-C:\Users\milesdai\AppData\Local\Temp/ccK5hoNU.s:5      *ABS*:00000034 __CCP__
-C:\Users\milesdai\AppData\Local\Temp/ccK5hoNU.s:6      *ABS*:00000000 __tmp_reg__
-C:\Users\milesdai\AppData\Local\Temp/ccK5hoNU.s:7      *ABS*:00000001 __zero_reg__
-C:\Users\milesdai\AppData\Local\Temp/ccK5hoNU.s:18     .text:00000000 main
+C:\Users\milesdai\AppData\Local\Temp/ccMzxM6u.s:2      *ABS*:0000003f __SREG__
+C:\Users\milesdai\AppData\Local\Temp/ccMzxM6u.s:3      *ABS*:0000003e __SP_H__
+C:\Users\milesdai\AppData\Local\Temp/ccMzxM6u.s:4      *ABS*:0000003d __SP_L__
+C:\Users\milesdai\AppData\Local\Temp/ccMzxM6u.s:5      *ABS*:00000034 __CCP__
+C:\Users\milesdai\AppData\Local\Temp/ccMzxM6u.s:6      *ABS*:00000000 __tmp_reg__
+C:\Users\milesdai\AppData\Local\Temp/ccMzxM6u.s:7      *ABS*:00000001 __zero_reg__
+C:\Users\milesdai\AppData\Local\Temp/ccMzxM6u.s:18     .text:00000000 main
 
 NO UNDEFINED SYMBOLS

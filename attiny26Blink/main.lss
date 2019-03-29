@@ -57,12 +57,12 @@ Disassembly of section .text:
 int main (void)
 {
     // set PB3 to be output
-	DDRA |= (1 << 0);
-  26:	d0 9a       	sbi	0x1a, 0	; 26
+	DDRB |= (1 << 0);
+  26:	b8 9a       	sbi	0x17, 0	; 23
     while (1) {
 
         // set PB3 high
-        PORTA ^= (1<<0);
+        PORTB ^= (1<<0);
   28:	61 e0       	ldi	r22, 0x01	; 1
     milliseconds can be achieved.
  */
@@ -74,9 +74,9 @@ _delay_loop_2(uint16_t __count)
   2c:	50 e0       	ldi	r21, 0x00	; 0
   2e:	20 e5       	ldi	r18, 0x50	; 80
   30:	33 ec       	ldi	r19, 0xC3	; 195
-  32:	8b b3       	in	r24, 0x1b	; 27
+  32:	88 b3       	in	r24, 0x18	; 24
   34:	86 27       	eor	r24, r22
-  36:	8b bb       	out	0x1b, r24	; 27
+  36:	88 bb       	out	0x18, r24	; 24
   38:	80 e4       	ldi	r24, 0x40	; 64
   3a:	9f e1       	ldi	r25, 0x1F	; 31
   3c:	e4 2f       	mov	r30, r20
@@ -99,10 +99,10 @@ _delay_loop_2(uint16_t __count)
   46:	d1 f7       	brne	.-12     	; 0x3c <__CCP__+0x8>
         _delay_ms(800);
         // set PB3 low
-        PORTA ^= (1<<0);
-  48:	8b b3       	in	r24, 0x1b	; 27
+        PORTB ^= (1<<0);
+  48:	88 b3       	in	r24, 0x18	; 24
   4a:	86 27       	eor	r24, r22
-  4c:	8b bb       	out	0x1b, r24	; 27
+  4c:	88 bb       	out	0x18, r24	; 24
   4e:	82 2f       	mov	r24, r18
   50:	93 2f       	mov	r25, r19
   52:	01 97       	sbiw	r24, 0x01	; 1
