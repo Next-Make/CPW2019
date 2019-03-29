@@ -1,0 +1,134 @@
+
+main.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000000dc  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .debug_aranges 00000020  00000000  00000000  00000130  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  2 .debug_pubnames 0000002b  00000000  00000000  00000150  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  3 .debug_info   0000008a  00000000  00000000  0000017b  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_abbrev 00000056  00000000  00000000  00000205  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_line   000000a8  00000000  00000000  0000025b  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_frame  00000030  00000000  00000000  00000304  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_str    000000be  00000000  00000000  00000334  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 34 00 	jmp	0x68	; 0x68 <__ctors_end>
+   4:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+   8:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+   c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  10:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  14:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  18:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  1c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  20:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  24:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  28:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  2c:	0c 94 5a 00 	jmp	0xb4	; 0xb4 <__vector_11>
+  30:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  34:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  38:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  3c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  40:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  44:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  48:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  4c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  50:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  54:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  58:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  5c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  60:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  64:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+
+00000068 <__ctors_end>:
+  68:	11 24       	eor	r1, r1
+  6a:	1f be       	out	0x3f, r1	; 63
+  6c:	cf ef       	ldi	r28, 0xFF	; 255
+  6e:	d8 e0       	ldi	r29, 0x08	; 8
+  70:	de bf       	out	0x3e, r29	; 62
+  72:	cd bf       	out	0x3d, r28	; 61
+  74:	0e 94 40 00 	call	0x80	; 0x80 <main>
+  78:	0c 94 6c 00 	jmp	0xd8	; 0xd8 <_exit>
+
+0000007c <__bad_interrupt>:
+  7c:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+00000080 <main>:
+
+int main(void)
+{
+
+  //Setup the clock
+  cli();			//Disable global interrupts
+  80:	f8 94       	cli
+  TCCR1B |= 1<<CS11 | 1<<CS10;	//Divide by 64
+  82:	80 91 81 00 	lds	r24, 0x0081
+  86:	83 60       	ori	r24, 0x03	; 3
+  88:	80 93 81 00 	sts	0x0081, r24
+  OCR1A = (int)(15624/10);		//Count 15624 cycles for 1 second interrupt
+  8c:	8a e1       	ldi	r24, 0x1A	; 26
+  8e:	96 e0       	ldi	r25, 0x06	; 6
+  90:	90 93 89 00 	sts	0x0089, r25
+  94:	80 93 88 00 	sts	0x0088, r24
+  TCCR1B |= 1<<WGM12;		//Put Timer/Counter1 in CTC mode
+  98:	80 91 81 00 	lds	r24, 0x0081
+  9c:	88 60       	ori	r24, 0x08	; 8
+  9e:	80 93 81 00 	sts	0x0081, r24
+  TIMSK1 |= 1<<OCIE1A;		//enable timer compare interrupt
+  a2:	80 91 6f 00 	lds	r24, 0x006F
+  a6:	82 60       	ori	r24, 0x02	; 2
+  a8:	80 93 6f 00 	sts	0x006F, r24
+  sei();			//Enable global interrupts
+  ac:	78 94       	sei
+
+  //Setup the I/O for the LED
+
+  DDRD |= (1<<0);		//Set PortD Pin0 as an output
+  ae:	50 9a       	sbi	0x0a, 0	; 10
+  PORTD |= (1<<0);		//Set PortD Pin0 high to turn on LED
+  b0:	58 9a       	sbi	0x0b, 0	; 11
+  b2:	ff cf       	rjmp	.-2      	; 0xb2 <main+0x32>
+
+000000b4 <__vector_11>:
+
+  while(1) { }			//Loop forever, interrupts do the rest
+}
+
+ISR(TIMER1_COMPA_vect)		//Interrupt Service Routine
+{
+  b4:	1f 92       	push	r1
+  b6:	0f 92       	push	r0
+  b8:	0f b6       	in	r0, 0x3f	; 63
+  ba:	0f 92       	push	r0
+  bc:	11 24       	eor	r1, r1
+  be:	8f 93       	push	r24
+  c0:	9f 93       	push	r25
+  PORTD ^= (1<<0);		//Use xor to toggle the LED
+  c2:	8b b1       	in	r24, 0x0b	; 11
+  c4:	91 e0       	ldi	r25, 0x01	; 1
+  c6:	89 27       	eor	r24, r25
+  c8:	8b b9       	out	0x0b, r24	; 11
+}
+  ca:	9f 91       	pop	r25
+  cc:	8f 91       	pop	r24
+  ce:	0f 90       	pop	r0
+  d0:	0f be       	out	0x3f, r0	; 63
+  d2:	0f 90       	pop	r0
+  d4:	1f 90       	pop	r1
+  d6:	18 95       	reti
+
+000000d8 <_exit>:
+  d8:	f8 94       	cli
+
+000000da <__stop_program>:
+  da:	ff cf       	rjmp	.-2      	; 0xda <__stop_program>
