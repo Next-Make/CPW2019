@@ -19,6 +19,7 @@ int acdRead(void);
 int findPeak(int data[], int size);
 int scalePeak(int n);
 void lightLeds(int n);
+void lightBinary(unsigned int n);
 
 int main(void) {
 
@@ -51,7 +52,7 @@ int main(void) {
 		// result = adcRead();
 		// lightLeds(scalePeak(result));
 
-		testLEDs();
+		testBinary();
 
 	}
 	return 1;
@@ -114,5 +115,18 @@ void lightLeds(int n) {
 			default:
 				PORTA = 0b10110;
 		}
+	}
+}
+
+void lightBinary(unsigned int n) {
+	unsigned int lowerBits = n & 0x3FF;
+	PORTB = n & 0x7F;
+	PORTA = (n & (1 << 7)) >> 6 | (n & (1 << 8)) >> 6 | (n & (1 << 9)) >> 5;
+}
+
+void testBinary(void) {
+	for(int i = 0; i < 1024; i++) {
+		lightBinary(i);
+		_delay_ms(20);
 	}
 }
