@@ -45,19 +45,13 @@ int main(void) {
 	*/
 	ADCSR = 1 << ADEN | 3 << ADPS0;
 
-	// int readings[NUM_SAMPLES];
-	// int peak;
 	int result;
 
 	while(1) {
+		// result = adcRead();
+		// lightLeds(scalePeak(result));
 
-		// for(int i = 0; i < NUM_SAMPLES; i++) {
-		// 	readings[i] = adcRead();
-		// }
-		result = adcRead();
-		lightLeds(scalePeak(result));
-
-		// peak = findPeak(readings, NUM_SAMPLES);
+		testLEDs();
 
 	}
 	return 1;
@@ -101,53 +95,24 @@ int scalePeak(int n) {
 }
 
 void lightLeds(int n) {
-	switch(n) {
-		case 0:
-			PORTB = 0;
-			PORTA = 0;
-			break;
-		case 1:
-			PORTB = 0b00000001;
-			PORTA = 0X00;
-			break;
-		case 2:
-			PORTB = 0b00000011;
-			PORTA = 0X00;
-			break;
-		case 3:
-			PORTB = 0b00000111;
-			PORTA = 0x00;
-			break;
-		case 4:
-			PORTB = 0b00001111;
-			PORTA = 0x00;
-			break;
-		case 5:
-			PORTB = 0b00011111;
-			PORTA = 0x00;
-			break;
-		case 6:
-			PORTB = 0b00111111;
-			PORTA = 0x00;
-			break;
-		case 7:
-			PORTB = 0b01111111;
-			PORTA = 0x00;
-			break;
-		case 8:
-			PORTB = 0b01111111;
-			PORTA = 0b00000010;
-			break;
-		case 9:
-			PORTB = 0b01111111;
-			PORTA = 0b00000110;
-			break;
-		case 10:
-			PORTB = 0b01111111;
-			PORTA = 0b00010110;
-			break;
-		default:
-			PORTB = 0b01111111;
-			PORTA = 0b00010110;
+
+	if(n < 8) {
+		PORTB = (1<<n) - 1;
+		PORTA = 0x00;
+	} else {
+		PORTB = (1<<7) - 1;
+		switch(n) {
+			case 8:
+				PORTA = 0b10;
+				break;
+			case 9:
+				PORTA = 0b110;
+				break;
+			case 10:
+				PORTA = 0b10110;
+				break;
+			default:
+				PORTA = 0b10110;
+		}
 	}
 }
