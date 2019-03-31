@@ -10,16 +10,20 @@ PORTA [2:1] -> leds [9:8]
 #include<avr/io.h>
 #include<util/delay.h>
 
-#define NUM_SAMPLES 100
+#define NUM_SAMPLES 700
 
 #define LOWER_BOUND 0
 #define UPPER_BOUND 100
 
-int acdRead(void);
-int findPeak(int data[], int size);
-int scalePeak(int n);
-void lightLeds(int n);
+int adcRead(void);
+int findMin(int data[], int size);
 void lightBinary(unsigned int n);
+void lightLeds(int n);
+int scalePeak(int n);
+void showVolume(void);
+void testBinary(void);
+void testLEDs(void);
+
 
 int main(void) {
 
@@ -44,18 +48,33 @@ int main(void) {
 	ADIE = 1 (interrupt enable)
 	ADPS[2:0] = 011 (divide by 8 - assuming a 1 MHz internal clock) <- will need to check fuse bits for this
 	*/
-	ADCSR = 1 << ADEN | 3 << ADPS0;
+	ADCSR = 1 << ADEN | 3 << ADPS0 | 1 << ADIE;
 
 	int result;
 
 	while(1) {
-		// result = adcRead();
-		// lightLeds(scalePeak(result));
-
-		testBinary();
+		result = adcRead();
+		// lightBinary((int)result);
+		_delay_ms(100);
+		lightLeds(scalePeak(result));
+		// testLEDs();
 
 	}
 	return 1;
+}
+
+void showVolume(void) {
+	// ADC clk speed is 1 MHz/8 = 125kHz
+	// For a 100Hz wave, this requires 625 samples to get half the wave
+	// Will get 700 samples and take the smallest 
+
+	int minSample = 0;
+	for(int i = 0; i < NUM_SAMPLES; i++) {
+		int sample = adcRead();
+		minSample = (sample < minSample) ? sample : minSample;
+	}
+
+	lightLeds(10 - scalePeak(minSample));
 }
 
 void testLEDs(void) {
@@ -71,20 +90,19 @@ void testLEDs(void) {
 
 int adcRead(void) {
 	ADCSR = ADCSR | (1 << ADSC); // start ADC conversion
-	// while((ADCSR & (1 << ADIF)) == 0); // Check ADC interrupt
-	while(ADCSR & 1<<ADSC);
+	while((ADCSR & (1 << ADIF)) == 0); // Check ADC interrupt
 
-	unsigned char adcHigh = ADCH;
+	unsigned int adcHigh = ADCH;
 
-	return (int)(adcHigh << 8); // read top byte (discard lower bytes)
+	return (int)(adcHigh << 2); // read top byte (discard lower bytes)
 }
 
-int findPeak(int data[], int size) {
-	int max = data[0];
+int findMin(int data[], int size) {
+	int min = data[0];
 	for(int i = 0; i < size; i++) {
-		max = (max < data[i]) ? data[i] : max;
+		min = (min > data[i]) ? data[i] : min;
 	}
-	return max;
+	return min;
 }
 
 // scale the peak value from 0 to 10 inclusive to indicated number of led bars
