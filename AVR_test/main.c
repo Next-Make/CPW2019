@@ -10,7 +10,7 @@ PORTA [2:1] -> leds [9:8]
 #include<avr/io.h>
 #include<util/delay.h>
 
-#define NUM_SAMPLES 700
+#define NUM_SAMPLES 1000
 
 #define LOWER_BOUND 0
 #define UPPER_BOUND 100
@@ -53,10 +53,11 @@ int main(void) {
 	int result;
 
 	while(1) {
-		result = adcRead();
-		// lightBinary((int)result);
-		_delay_ms(100);
-		lightLeds(scalePeak(result));
+		// result = adcRead();
+		//lightBinary((int)result);
+		// _delay_ms(100);
+		showVolume();
+		// lightLeds(scalePeak(result));
 		// testLEDs();
 
 	}
@@ -68,13 +69,16 @@ void showVolume(void) {
 	// For a 100Hz wave, this requires 625 samples to get half the wave
 	// Will get 700 samples and take the smallest 
 
-	int minSample = 0;
+	int minSample = adcRead();
+	unsigned long sum = 0;
 	for(int i = 0; i < NUM_SAMPLES; i++) {
 		int sample = adcRead();
-		minSample = (sample < minSample) ? sample : minSample;
+		// minSample = (sample < minSample) ? sample : minSample;
+		sum += sample;
+		_delay_us(10);
 	}
 
-	lightLeds(10 - scalePeak(minSample));
+	lightLeds(10 - scalePeak(sum / NUM_SAMPLES));
 }
 
 void testLEDs(void) {
@@ -137,7 +141,6 @@ void lightLeds(int n) {
 }
 
 void lightBinary(unsigned int n) {
-	unsigned int lowerBits = n & 0x3FF;
 	PORTB = n & 0x7F;
 	PORTA = (n & (1 << 7)) >> 6 | (n & (1 << 8)) >> 6 | (n & (1 << 9)) >> 5;
 }
