@@ -9,6 +9,8 @@ PORTA [2:1] -> leds [9:8]
 
 #include<avr/io.h>
 #include<util/delay.h>
+#include<stdlib.h>
+#include<math.h>
 
 #define NUM_SAMPLES 1000
 
@@ -28,7 +30,7 @@ void testLEDs(void);
 int main(void) {
 
 	// Setup code
-	DDRA = 0xFE; // On port A, set pin 1 to input and rest to output
+	DDRA = 0b00010110; // On port A, set pin 1 to input and rest to output
 	DDRB = 0b01111111;// 0xFF; // Set port B to output (drive LEDs)
 
 	/*
@@ -37,7 +39,7 @@ int main(void) {
 	ADLAR = 1 (left-justified)
 	MUX[4:0] = 00000 (ADC0)
 	*/
-	ADMUX = 1 << ADLAR; //0x20; // 00100000
+	ADMUX = 1 << ADLAR | 2 << REFS0; //0x20; // 00100000
 
 	/*
 	ADC Control and Status Register:
@@ -48,37 +50,23 @@ int main(void) {
 	ADIE = 1 (interrupt enable)
 	ADPS[2:0] = 011 (divide by 8 - assuming a 1 MHz internal clock) <- will need to check fuse bits for this
 	*/
-	ADCSR = 1 << ADEN | 3 << ADPS0 | 1 << ADIE;
+	ADCSR = 1 << ADEN | 3 << ADPS0;
 
 	int result;
 
 	while(1) {
-		// result = adcRead();
-		//lightBinary((int)result);
-		// _delay_ms(100);
+		
 		showVolume();
-		// lightLeds(scalePeak(result));
-		// testLEDs();
-
+		
 	}
 	return 1;
 }
 
 void showVolume(void) {
-	// ADC clk speed is 1 MHz/8 = 125kHz
-	// For a 100Hz wave, this requires 625 samples to get half the wave
-	// Will get 700 samples and take the smallest 
 
-	int minSample = adcRead();
-	unsigned long sum = 0;
-	for(int i = 0; i < NUM_SAMPLES; i++) {
-		int sample = adcRead();
-		// minSample = (sample < minSample) ? sample : minSample;
-		sum += sample;
-		_delay_us(10);
-	}
-
-	lightLeds(10 - scalePeak(sum / NUM_SAMPLES));
+	int sample = adcRead();
+	lightLeds(scalePeak(sample));
+	_delay_ms(100);
 }
 
 void testLEDs(void) {
@@ -101,17 +89,9 @@ int adcRead(void) {
 	return (int)(adcHigh << 2); // read top byte (discard lower bytes)
 }
 
-int findMin(int data[], int size) {
-	int min = data[0];
-	for(int i = 0; i < size; i++) {
-		min = (min > data[i]) ? data[i] : min;
-	}
-	return min;
-}
-
 // scale the peak value from 0 to 10 inclusive to indicated number of led bars
 int scalePeak(int n) {
-	int res = n * 10 / 1024;
+	int res = abs(n -213) / 28;
 	res = (res > 10) ? 10 : res;
 	res = (res < 0) ? 0 : res;
 	return res;
