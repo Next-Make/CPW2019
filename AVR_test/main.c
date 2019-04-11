@@ -91,7 +91,7 @@ int adcRead(void) {
 
 // scale the peak value from 0 to 10 inclusive to indicated number of led bars
 int scalePeak(int n) {
-	int res = abs(n -213) / 28;
+	int res = abs(n - 360) / 27; //341
 	res = (res > 10) ? 10 : res;
 	res = (res < 0) ? 0 : res;
 	return res;
