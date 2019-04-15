@@ -50,7 +50,7 @@ int main(void) {
 	ADIE = 1 (interrupt enable)
 	ADPS[2:0] = 011 (divide by 8 - assuming a 1 MHz internal clock) <- will need to check fuse bits for this
 	*/
-	ADCSR = 1 << ADEN | 3 << ADPS0;
+	ADCSRA = 1 << ADEN | 3 << ADPS0;
 
 	int result;
 
@@ -81,8 +81,8 @@ void testLEDs(void) {
 }
 
 int adcRead(void) {
-	ADCSR = ADCSR | (1 << ADSC); // start ADC conversion
-	while((ADCSR & (1 << ADIF)) == 0); // Check ADC interrupt
+	ADCSRA = ADCSRA | (1 << ADSC); // start ADC conversion
+	while((ADCSRA & (1 << ADIF)) == 0); // Check ADC interrupt
 
 	unsigned int adcHigh = ADCH;
 
@@ -91,7 +91,7 @@ int adcRead(void) {
 
 // scale the peak value from 0 to 10 inclusive to indicated number of led bars
 int scalePeak(int n) {
-	int res = abs(n - 360) / 27; //341
+	int res = abs(n - 800) / 45; //341
 	res = (res > 10) ? 10 : res;
 	res = (res < 0) ? 0 : res;
 	return res;
