@@ -7,3 +7,5 @@
 **.o
 **.sym
 **.zip
+.vscode/*
+had_AVRtut_2-master/*
