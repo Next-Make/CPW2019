@@ -30,7 +30,7 @@ AVRdude should be bundled with the packages mentioned in the previous section. R
 ## Programming
 1. Navigate to AVR_test The makefile is set to compile the code and also run AVRdude for convenience. To set up this functionality, ensure the correct parameters are set in ```makefile```. Specifically:
 ```
-MCU = attiny261
+MCU = attiny26
 AVRDUDE_PROGRAMMER = usbtiny
 AVRDUDE_PORT = usb
 ```
